@@ -1,4 +1,5 @@
 import 'package:chat_app/cuibts/login_cubit/login_cubit.dart';
+import 'package:chat_app/cuibts/register_cubit/register_cubit.dart';
 import 'package:chat_app/firebase_options.dart';
 import 'package:chat_app/pages/chat_page.dart';
 import 'package:chat_app/pages/home_page.dart';
@@ -30,8 +31,15 @@ class ChatApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LoginCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => LoginCubit(),
+        ),
+        BlocProvider(
+          create: (context) => RegisterCubit(),
+        ),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: (FirebaseAuth.instance.currentUser != null)
