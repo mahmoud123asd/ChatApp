@@ -25,6 +25,7 @@ class SignInPage extends StatelessWidget {
               arguments: email.text);
           loading = false;
         } else if (state is LoginFailure) {
+          loading = false;
           showSnackBar(context: context, content: state.errorMessage);
         }
       },
