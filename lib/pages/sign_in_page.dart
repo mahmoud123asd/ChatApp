@@ -1,3 +1,4 @@
+import 'package:chat_app/cuibts/chat_cubit/chat_cubit.dart';
 import 'package:chat_app/cuibts/login_cubit/login_cubit.dart';
 import 'package:chat_app/helpers/constants.dart';
 import 'package:chat_app/helpers/show_snack_bar.dart';
@@ -20,6 +21,7 @@ class SignInPage extends StatelessWidget {
         if (state is LoginLoading) {
           loading = true;
         } else if (state is LoginSuccess) {
+          BlocProvider.of<ChatCubit>(context).getMessages();
           Navigator.of(context).pushNamedAndRemoveUntil(
               'chat', (route) => false,
               arguments: email.text);

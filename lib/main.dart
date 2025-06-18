@@ -1,11 +1,12 @@
+import 'package:chat_app/cuibts/chat_cubit/chat_cubit.dart';
 import 'package:chat_app/cuibts/login_cubit/login_cubit.dart';
 import 'package:chat_app/cuibts/register_cubit/register_cubit.dart';
 import 'package:chat_app/firebase_options.dart';
-import 'package:chat_app/pages/chat_page.dart';
 import 'package:chat_app/pages/home_page.dart';
 import 'package:chat_app/pages/sign_in_page.dart';
 import 'package:chat_app/pages/sing_up_page.dart';
 import 'package:chat_app/pages/splash_page.dart';
+import 'package:chat_app/widgets/chat_body.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -39,16 +40,19 @@ class ChatApp extends StatelessWidget {
         BlocProvider(
           create: (context) => RegisterCubit(),
         ),
+         BlocProvider(
+          create: (context) => ChatCubit(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         home: (FirebaseAuth.instance.currentUser != null)
-            ? ChatPage()
+            ? ChatBody()
             : SplashPage(),
         routes: {
           "signin": (context) => SignInPage(),
           "signup": (context) => SignUpPage(),
-          "chat": (context) => ChatPage(),
+          "chat": (context) => ChatBody(),
           "homepage": (context) => HomePage(),
         },
       ),

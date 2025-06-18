@@ -1,21 +1,18 @@
+import 'package:chat_app/cuibts/chat_cubit/chat_cubit.dart';
 import 'package:chat_app/helpers/constants.dart';
 import 'package:chat_app/models/message_model.dart';
 import 'package:chat_app/widgets/chat_bubble.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatBody extends StatelessWidget {
   ChatBody({
     super.key,
-    required this.messageslist,
-    required this.controller,
-    required this.messages,
   });
 
-  final List<MessageModel> messageslist;
-  final TextEditingController controller;
-  final CollectionReference<Object?> messages;
+  List<MessageModel> messageslist = [];
+  TextEditingController controller = TextEditingController();
   ScrollController scrollcontrol = ScrollController();
 
   @override
@@ -58,16 +55,22 @@ class ChatBody extends StatelessWidget {
         ),
         body: Column(children: [
           Expanded(
-            child: ListView.builder(
-              reverse: true,
-              controller: scrollcontrol,
-              itemCount: messageslist.length,
-              itemBuilder: (BuildContext context, int index) {
-                return (messageslist[index].id == email)
-                    ? ChatBubble(
-                        message: messageslist[index].message,
-                      )
-                    : ChatBubbleForFriend(message: messageslist[index].message);
+            child: BlocBuilder<ChatCubit, ChatState>(
+              builder: (context, state) {
+                messageslist = BlocProvider.of<ChatCubit>(context).messageslist;
+                return ListView.builder(
+                  reverse: true,
+                  controller: scrollcontrol,
+                  itemCount: messageslist.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return (messageslist[index].id == email)
+                        ? ChatBubble(
+                            message: messageslist[index].message,
+                          )
+                        : ChatBubbleForFriend(
+                            message: messageslist[index].message);
+                  },
+                );
               },
             ),
           ),
@@ -76,11 +79,9 @@ class ChatBody extends StatelessWidget {
             child: TextField(
                 controller: controller,
                 onSubmitted: (value) {
-                  messages.add({
-                    'message': value,
-                    'createdAt': DateTime.now(),
-                    'id': email,
-                  });
+                  BlocProvider.of<ChatCubit>(context)
+                      .sendMessage(message: value, email: email!);
+                  // BlocProvider.of<ChatCubit>(context).getMessages();
                   controller.clear();
                   scrollcontrol.animateTo(
                     0,
@@ -95,11 +96,9 @@ class ChatBody extends StatelessWidget {
                   hintStyle: TextStyle(color: Colors.black),
                   suffixIcon: IconButton(
                     onPressed: () {
-                      messages.add({
-                        'message': controller.text,
-                        'createdAt': DateTime.now(),
-                        'id': email,
-                      });
+                      BlocProvider.of<ChatCubit>(context)
+                          .sendMessage(message: controller.text, email: email!);
+                      //BlocProvider.of<ChatCubit>(context).getMessages();
                       controller.clear();
                       scrollcontrol.animateTo(
                         0,
