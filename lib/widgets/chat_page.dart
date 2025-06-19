@@ -6,8 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ChatBody extends StatelessWidget {
-  ChatBody({
+class ChatPage extends StatelessWidget {
+  ChatPage({
     super.key,
   });
 
@@ -57,6 +57,7 @@ class ChatBody extends StatelessWidget {
           Expanded(
             child: BlocBuilder<ChatCubit, ChatState>(
               builder: (context, state) {
+                BlocProvider.of<ChatCubit>(context).getMessages();
                 messageslist = BlocProvider.of<ChatCubit>(context).messageslist;
                 return ListView.builder(
                   reverse: true,
@@ -81,7 +82,6 @@ class ChatBody extends StatelessWidget {
                 onSubmitted: (value) {
                   BlocProvider.of<ChatCubit>(context)
                       .sendMessage(message: value, email: email!);
-                  // BlocProvider.of<ChatCubit>(context).getMessages();
                   controller.clear();
                   scrollcontrol.animateTo(
                     0,
@@ -98,7 +98,6 @@ class ChatBody extends StatelessWidget {
                     onPressed: () {
                       BlocProvider.of<ChatCubit>(context)
                           .sendMessage(message: controller.text, email: email!);
-                      //BlocProvider.of<ChatCubit>(context).getMessages();
                       controller.clear();
                       scrollcontrol.animateTo(
                         0,
